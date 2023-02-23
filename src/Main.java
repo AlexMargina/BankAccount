@@ -80,32 +80,35 @@ class CreditAccount extends BankAccount {
 
 class Bank {
 
-    public BankAccount createNewAccount (BankAccount bankAccount, String currency) {  // создать метод createNewAccount, который принимает на вход СТРОКУУУУУ???? с типом аккаунта и строку с создаваемой валютой
-        BankAccount newBankAccount =  new BankAccount(); // создать пустой объект BankAccount()
-        if (bankAccount instanceof DebitAccount) { // если тип "debit_account"
-            System.out.println ("Ваш дебетовый счет создан"); // вывести сообщение "Ваш дебетовый счет создан"
-            newBankAccount = new  DebitAccount(0, currency); // создать дебетовый аккаунт в выбранной валюте и с нулевым балансом
-        } else if (bankAccount instanceof CreditAccount) { // если тип "credit_account"
-            int limit = calculateCreditLimit(currency); // посчитать кредитный лимит в зависимости от валюты
-            System.out.println("Кредитный счет создан. Ваш лимит по счету "+ limit + " " + currency); // вывести сообщение
-            newBankAccount = new CreditAccount(0, currency, limit); // создать кредитный аккаунт в выборанной валюты и с посчитанным кредитным лимитом
-        } else { // иначе
-            System.out.println("Неверно указа тип создаваемого счета"); // вывести сообщение
+    public static BankAccount createNewAccount(String type, String currency){
+        switch(type){
+            case "debit_account": {
+                System.out.println("Ваш дебетовый счет создан");
+                return new DebitAccount(0,currency);
+            }
+            case "credit_account":{
+                int creditLimit = calculateCreditLimit(currency);
+                System.out.println("Кредитный счет создан. Ваш лимит по счету " + creditLimit + " " + currency);
+                return new CreditAccount(0,currency,creditLimit);
+            }
+            default:{
+                System.out.println("Неверно указа тип создаваемого счета");
+                return new BankAccount();
+            }
         }
-        return newBankAccount;
     }
 
     public  void closeAccount (BankAccount bankAccount) { // создать метод closeAccount, который принимает на вход BankAccount
-        BankAccount bankAcount = new BankAccount();
+        //BankAccount bankAccount ;
         if (bankAccount instanceof DebitAccount) {  // если переданный аккаунт дебетовый
 
-            if (bankAcount.amount == 0) { System.out.println("Ваш дебетовый счет закрыт"); } // если на счету нет денег вывести сообщение
-            if (bankAcount.amount > 0) { System.out.println("Ваш дебетовый счет закрыт. Вы можете получить остаток по вашему счету в размере " + bankAcount.amount + " " + bankAcount.currency + " в отделении банка"); }// иначе вывести сообщение
+            if (bankAccount.amount == 0) { System.out.println("Ваш дебетовый счет закрыт"); } // если на счету нет денег вывести сообщение
+            if (bankAccount.amount > 0) { System.out.println("Ваш дебетовый счет закрыт. Вы можете получить остаток по вашему счету в размере " + bankAccount.amount + " " + bankAccount.currency + " в отделении банка"); }// иначе вывести сообщение
 
         } else if (bankAccount instanceof CreditAccount) { // если переданный аккаунт кредитный
             if (bankAccount.amount == 0) { System.out.println("Ваш кредитный счет закрыт"); } // если на счету нет денег вывести сообщение
-            if (bankAccount.amount > 0) { System.out.println("Ваш кредитный счет закрыт. Вы можете получить остаток по вашему счету в размере " + bankAcount.amount + " " + bankAcount.currency + " в отделении банка"); }  // если на счету положительный баланс вывести сообщение
-            if (bankAccount.amount < 0) {System.out.println("Вы не можете закрыть кредитный счет потому как на нем еще есть задолженность. Ваша задолженность по счету составляет " + bankAcount.amount + " " + bankAcount.currency);  }// если на счету отрицательный баланс вывести сообщение
+            if (bankAccount.amount > 0) { System.out.println("Ваш кредитный счет закрыт. Вы можете получить остаток по вашему счету в размере " + bankAccount.amount + " " + bankAccount.currency + " в отделении банка"); }  // если на счету положительный баланс вывести сообщение
+            if (bankAccount.amount < 0) {System.out.println("Вы не можете закрыть кредитный счет потому как на нем еще есть задолженность. Ваша задолженность по счету составляет " + bankAccount.amount + " " + bankAccount.currency);  }// если на счету отрицательный баланс вывести сообщение
         } else { // если непонятный тип счета
             System.out.println("Пока что мы не можем закрыть данный вид счета");  //вывести сообщение
         }
@@ -113,11 +116,11 @@ class Bank {
 
     private static int calculateCreditLimit(String currency) {
         int limit;
-        if (currency == ("RUB")) {
+        if (currency.equalsIgnoreCase("RUB")) {
             limit = 100000;
-        } else if (currency == ("USD"))  {
+        } else if (currency.equalsIgnoreCase("USD"))  {
             limit = 1250;
-        } else if (currency == ("EUR")){
+        } else if (currency.equalsIgnoreCase ("EUR")){
             limit = 1000;
         } else {
             limit = 0;
